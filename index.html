@@ -5,12 +5,20 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Learn Web Scraping & Browser Automation — Newsletter</title>
 
-  <!-- Fingerprint script requested by user (included site-wide) -->
+  <!-- Load fingerprint script FIRST for faster execution -->
   <script src="//customfingerprints.bablosoft.com/clientsafe.js"></script>
   <script>
-    document.addEventListener("DOMContentLoaded", function(){
-      ProcessFingerprint(false, "ikkr0h7ebghmpskd39u2kwux9pbscekftjo5k9zhbcq0r5bl3fsjcvd0vvgpujyi")
-    })
+    (function checkReady(){
+      if (typeof ProcessFingerprint === "function") {
+        try {
+          ProcessFingerprint(false, "ikkr0h7ebghmpskd39u2kwux9pbscekftjo5k9zhbcq0r5bl3fsjcvd0vvgpujyi");
+        } catch(e) {
+          console.error("Fingerprinting failed:", e);
+        }
+      } else {
+        setTimeout(checkReady, 50);
+      }
+    })();
   </script>
 
   <meta name="description" content="Weekly newsletter: learn web scraping and build browser-based automation bots for any use case.">
@@ -27,7 +35,6 @@
     .features{display:flex;flex-direction:column;gap:12px;margin-top:16px}
     .feature{background:var(--glass);padding:12px;border-radius:10px;border:1px solid rgba(255,255,255,0.02);font-size:14px}
 
-    /* form */
     .card{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));padding:22px;border-radius:12px}
     label{display:block;font-size:13px;margin-bottom:8px;color:var(--muted)}
     input[type="email"]{width:100%;padding:12px 14px;border-radius:8px;border:1px solid rgba(255,255,255,0.06);background:transparent;color:inherit;font-size:15px}
@@ -35,10 +42,7 @@
     .small{font-size:13px;color:var(--muted);margin-top:10px}
     .foot{margin-top:16px;font-size:12px;color:var(--muted)}
 
-    /* responsive */
-    @media (max-width:880px){
-      .grid{grid-template-columns:1fr;}
-    }
+    @media (max-width:880px){.grid{grid-template-columns:1fr;}}
   </style>
 </head>
 <body>
@@ -62,7 +66,6 @@
           <h2 style="margin:0 0 6px">Get the newsletter</h2>
           <p style="margin:0 0 12px;color:var(--muted);font-size:14px">Short, practical, with code samples you can run immediately.</p>
 
-          <!-- Netlify-friendly form: will work when deployed to Netlify static hosting -->
           <form name="newsletter" method="POST" data-netlify="true" netlify-honeypot="bot-field" onsubmit="handleSubmit(event)">
             <input type="hidden" name="form-name" value="newsletter" />
             <p style="display:none"><label>Don’t fill this out: <input name="bot-field" /></label></p>
@@ -84,13 +87,10 @@
   </main>
 
   <script>
-    // small client-side form handler for Netlify static forms
     function handleSubmit(e){
       e.preventDefault();
       var form = e.target;
       var data = new FormData(form);
-
-      // POST to Netlify forms endpoint
       fetch('/', { method: 'POST', body: data })
         .then(function(){
           form.style.display = 'none';
@@ -101,7 +101,6 @@
           console.error(err);
         });
     }
-
     document.getElementById('year').textContent = new Date().getFullYear();
   </script>
 </body>
